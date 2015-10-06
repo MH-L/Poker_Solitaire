@@ -40,6 +40,14 @@ class Poker(object):
         Compares the poker when the first hand in the round is defined.
         theme: the suite of the first hand.
         """
+        if theme == 1:
+            return ()
+        elif theme == 2:
+            pass
+        elif theme == 3:
+            pass
+        else:
+            pass
         pass
 
     def compare_with_main(self, poker, main):
@@ -82,5 +90,17 @@ class Player(object):
         """
         self.pokers = list()
         self.turn = turn
+
+
+class Game(object):
+    def __init__(self):
+        pass
+
+    pass
+
+
+class NormalGame(Game):
+    def __init__(self, game_mode):
+        pass
 
 
