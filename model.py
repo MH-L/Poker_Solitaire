@@ -68,3 +68,19 @@ class Deck(object):
 
     def shuffle(self):
         pass
+
+    def distribute_card(self):
+        pass
+
+
+class Player(object):
+    def __init__(self, turn):
+        """
+        Initializes a player of a poker game.
+        :param turn: The position the player is at.
+        :return: Constructor.
+        """
+        self.pokers = list()
+        self.turn = turn
+
+
