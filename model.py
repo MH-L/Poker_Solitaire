@@ -31,6 +31,12 @@ class Poker(object):
         self.rank = rank
 
     def compare(self, poker):
+        """
+        Do general comparison without context.
+        This method does not allow indifferent results.
+        :param poker: Poker to compare with.
+        :return: True if self > poker, false otherwise.
+        """
         if self.suite == 0:
             if poker.suite != 0:
                 return True
@@ -39,9 +45,9 @@ class Poker(object):
                     return False
                 else:
                     return True
-        elif self.rank > poker.rank:
+        elif Poker.rank_greater_than(self.rank, poker.rank):
             return True
-        elif self.rank < poker.rank:
+        elif Poker.rank_greater_than(self.rank, poker.rank):
             return False
         else:
             return self.rank < poker.rank
@@ -55,7 +61,7 @@ class Poker(object):
         if self.suite == theme:
             if poker.suite != theme:
                 return constants.RESULT_LARGER
-            elif poker.rank > self.rank:
+            elif Poker.rank_greater_than(poker.rank, self.rank):
                 return constants.RESULT_SMALLER
             else:
                 return constants.RESULT_LARGER
@@ -70,7 +76,43 @@ class Poker(object):
         main: the main suite
         theme: the suite of the first hand.
         """
-        pass
+        if self.suite == main:
+            if poker.suite != main:
+                return constants.RESULT_LARGER
+            elif Poker.rank_greater_than(poker.rank, self.rank):
+                return constants.RESULT_SMALLER
+            else:
+                return constants.RESULT_LARGER
+        elif poker.suite == main:
+            return constants.RESULT_SMALLER
+        elif self.suite == theme:
+            if poker.suite != theme:
+                return constants.RESULT_LARGER
+            elif Poker.rank_greater_than(poker.rank, self.rank):
+                return constants.RESULT_SMALLER
+            else:
+                return constants.RESULT_LARGER
+        elif poker.suite == theme:
+            return constants.RESULT_SMALLER
+        else:
+            return constants.RESULT_INDIFFERENT
+
+    @staticmethod
+    def rank_greater_than(rank1, rank2):
+        """
+        Returns true if and only if rank1 is strictly greater than rank2.
+        Aces, which have rank 1, are the largest. That is one exception and
+        also the reason the helper function exists.
+        """
+        if rank1 == 1:
+            if rank2 != 1:
+                return True
+            else:
+                return False
+        elif rank2 == 1:
+            return False
+        else:
+            return rank1 > rank2
 
 
 class Deck(object):
