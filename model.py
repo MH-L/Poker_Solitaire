@@ -3,6 +3,8 @@ __author__ = 'Minghao'
 import constants
 import gameLogicExceptions
 
+from random import randint
+
 
 class Poker(object):
     """
@@ -117,22 +119,33 @@ class Poker(object):
 
 class Deck(object):
     """
-    Defines a set of poker. Singleton.
+    Defines a set of poker. (Should be) Singleton.
     """
     def __init__(self):
         self.spade = list()
         self.heart = list()
         self.diamond = list()
         self.club = list()
+        self.cards = list()
         self.jokers = [Poker(1,0), Poker(2,0)]
         for i in xrange(13):
             self.spade.append(Poker(i+1, 1))
             self.heart.append(Poker(i+1, 2))
             self.diamond.append(Poker(i+1, 3))
             self.club.append(Poker(i+1, 4))
+        self.cards.extend(self.spade)
+        self.cards.extend(self.heart)
+        self.cards.extend(self.diamond)
+        self.cards.extend(self.club)
 
     def shuffle(self):
-        pass
+        substitution = list()
+        while len(self.cards) > 1:
+            randSeed = randint(0, len(self.cards) - 1)
+            card = self.cards.pop(randSeed)
+            substitution.append(card)
+        substitution.append(self.cards[0])
+        self.cards = substitution
 
     def distribute_card(self):
         pass
