@@ -14,3 +14,7 @@ SUITE_CLUB = 4
 RANK_KING = 13
 RANK_QUEEN = 12
 RANK_JACK = 11
+# constants for results of comparing two different cards
+RESULT_LARGER = 1
+RESULT_SMALLER = 2
+RESULT_INDIFFERENT = 3

@@ -11,4 +11,6 @@ class InvalidPokerException(Exception):
     """
     Thrown when the poker has invalid rank, invalid suite or both.
     """
+    def __init__(self, message):
+        self.message = message
     pass

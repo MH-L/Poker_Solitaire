@@ -1,6 +1,7 @@
 __author__ = 'Minghao'
 
-import urllib
+import constants
+import gameLogicExceptions
 
 
 class Poker(object):
@@ -16,6 +17,16 @@ class Poker(object):
         :param suite: suite of a poker. As described in class doc string.
         :return: Constructor.
         """
+        if not 0 <= suite <= 4:
+            raise gameLogicExceptions.InvalidPokerException\
+                ("Invalid suite. Suite must be from 0 to 4.")
+        elif suite == 0:
+            if rank != 1 and rank != 2:
+                raise gameLogicExceptions.InvalidPokerException\
+                    ("Invalid joker. Joker must be either big or small.")
+        elif not 1 <= rank <= 13:
+            raise gameLogicExceptions.InvalidPokerException\
+                ("The rank of a normal suite must be between 0 and 13.")
         self.suite = suite
         self.rank = rank
 
@@ -39,21 +50,25 @@ class Poker(object):
         """
         Compares the poker when the first hand in the round is defined.
         theme: the suite of the first hand.
+        Theme cards are always greater than any other.
         """
-        if theme == 1:
-            return ()
-        elif theme == 2:
-            pass
-        elif theme == 3:
-            pass
+        if self.suite == theme:
+            if poker.suite != theme:
+                return constants.RESULT_LARGER
+            elif poker.rank > self.rank:
+                return constants.RESULT_SMALLER
+            else:
+                return constants.RESULT_LARGER
+        elif poker.suite == theme:
+            return constants.RESULT_SMALLER
         else:
-            pass
-        pass
+            return constants.RESULT_INDIFFERENT
 
-    def compare_with_main(self, poker, main):
+    def compare_with_main(self, poker, main, theme):
         """
         Compare the poker when the main suite is defined.
         main: the main suite
+        theme: the suite of the first hand.
         """
         pass
 
