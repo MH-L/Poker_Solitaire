@@ -17,5 +17,21 @@ def main():
         except ValueError:
             choice = INVALID_CHOICE_CONSTANT
 
+    if choice == 1:
+        startNormalGame()
+    elif choice == 2:
+        startHeartGame()
+    else:
+        startUPLevelGame()
+
+def startNormalGame():
+    pass
+
+def startHeartGame():
+    pass
+
+def startUPLevelGame():
+    pass
+
 if __name__ == "__main__":
     main()

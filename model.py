@@ -163,8 +163,12 @@ class Player(object):
 
 
 class Game(object):
+    """
+    This class is supposed to be a superclass of
+    all poker games the project supports.
+    """
     def __init__(self):
-        pass
+        self.deck = Deck()
 
     pass
 
