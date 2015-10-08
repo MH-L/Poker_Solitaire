@@ -67,3 +67,13 @@ class DeckTestCase(TestCase):
     def testShuffle(self):
         self.deck.shuffle()
         self.assertEqual(len(self.deck.cards), 54)
+
+
+class PlayerTestCase(TestCase):
+    player = Player(2)
+
+    def testReceiveCard(self):
+        self.player.receive_card(Poker(2, 1))
+        self.assertEqual(self.player.get_num_cards(), 1)
+        self.player.receive_card(Poker(3, 1))
+        self.assertEqual(self.player.get_num_cards(), 2)

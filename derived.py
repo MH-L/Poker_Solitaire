@@ -8,6 +8,9 @@ class NormalGame(Game):
         super(self, NormalGame).__init__()
         # do something here.
 
+    def compare_set(self, set1, set2):
+        pass
+
 
 class HeartsGame(Game):
     def ___init__(self):

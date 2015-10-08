@@ -1,6 +1,11 @@
 __author__ = 'Minghao'
 INVALID_CHOICE_CONSTANT = 0
 
+from model import (
+    Deck, Player, PokerHand, Game
+)
+
+
 def main():
     print "The Poker Game is starting."
     print "Please enter 1 for normal game, 2 for hearts game,\n" \
@@ -24,11 +29,24 @@ def main():
     else:
         startUPLevelGame()
 
+    deck = Deck()
+    p1 = Player(1)
+    p2 = Player(2)
+    p3 = Player(3)
+    p4 = Player(4)
+    game = Game(p1, p2, p3, p4)
+    game.deck.shuffle()
+    game.distribute_card()
+    game.print_player_cards()
+
+
 def startNormalGame():
     pass
 
+
 def startHeartGame():
     pass
+
 
 def startUPLevelGame():
     pass

@@ -40,6 +40,35 @@ class Poker(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def to_string(self):
+        retStr = ""
+        if self.suite == 0:
+            if self.rank == 1:
+                return "Big Joker"
+            else:
+                return "Small Joker"
+        elif self.suite == 1:
+            retStr += "Spade "
+        elif self.suite == 2:
+            retStr += "Heart "
+        elif self.suite == 3:
+            retStr += "Diamond "
+        elif self.suite == 4:
+            retStr += "Club "
+        else:
+            raise gameLogicExceptions.InvalidPokerException("Invalid card.")
+        if self.rank == 1:
+            retStr += "A"
+        elif self.rank == 11:
+            retStr += "J"
+        elif self.rank == 12:
+            retStr += "Q"
+        elif self.rank == 13:
+            retStr += "K"
+        else:
+            retStr += str(self.rank)
+        return retStr
+
     def compare(self, poker):
         """
         Do general comparison without context.
@@ -180,13 +209,6 @@ class Deck(object):
         substitution.append(self.cards[0])
         self.cards = substitution
 
-    def distribute_card(self, *player):
-        counter = 0
-        while counter < len(self.cards):
-            for p in player:
-                p.receive_card(self.cards[counter])
-        pass
-
 
 class Player(object):
     def __init__(self, turn):
@@ -196,14 +218,20 @@ class Player(object):
         :param turn: The position the player is at.
         :return: Constructor.
         """
-        self.poker_hand = PokerHand()
+        self.__poker_hand = PokerHand()
         self.turn = turn
 
     def receive_card(self, card):
-        self.poker_hand.receive_card(card)
+        self.__poker_hand.receive_card(card)
 
     def pullout_pokers(self, *cards):
-        self.poker_hand.pullout_pokers(cards)
+        self.__poker_hand.pullout_pokers(cards)
+
+    def get_num_cards(self):
+        return len(self.__poker_hand.cards)
+
+    def print_cards_in_hand(self):
+        print self.__poker_hand.to_string()
 
 
 class Game(object):
@@ -211,10 +239,33 @@ class Game(object):
     This class is supposed to be a superclass of
     all poker games the project supports.
     """
-    def __init__(self):
+    def __init__(self, *players):
         self.deck = Deck()
+        self.players = players
 
-    pass
+    def compare_set(self, set1, set2):
+        """
+        Compares a set with the other set of poker.
+        If the  first set is strictly larger than the second, return True;
+        otherwise return False.
+        :param set1: The first poker set to be compared.
+        :param set2: The second poker set to be compared.
+        Note: The result also depends on game type.
+        """
+        pass
+
+    def distribute_card(self):
+        counter = 0
+        while counter < len(self.deck.cards):
+            for p in self.players:
+                if counter >= len(self.deck.cards):
+                    return
+                p.receive_card(self.deck.cards[counter])
+                counter += 1
+
+    def print_player_cards(self):
+        for p in self.players:
+            p.print_cards_in_hand()
 
 
 class PokerSet(object):
@@ -223,15 +274,6 @@ class PokerSet(object):
     """
     def __init__(self):
         self.cards = list()
-
-    def compare_set(self, other):
-        """
-        Compares a set with the other set of poker.
-        If the set is strictly larger than the other, return True;
-        otherwise return False.
-        :param other: The other poker set to be compared.
-        """
-        pass
 
 
 class PokerHand(object):
@@ -247,4 +289,11 @@ class PokerHand(object):
     def pullout_pokers(self, *cards):
         for poker in cards:
             self.cards.remove(poker)
+
+    def to_string(self):
+        returnStr = "The list of cards are:\n"
+        for card in self.cards:
+            returnStr += card.to_string()
+            returnStr += "\n"
+        return returnStr
 
