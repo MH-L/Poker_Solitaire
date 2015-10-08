@@ -7,7 +7,6 @@ class SameCardException(Exception):
     """
     def __init__(self, message):
         self.message = message
-    pass
 
 class InvalidPokerException(Exception):
     """
@@ -15,4 +14,11 @@ class InvalidPokerException(Exception):
     """
     def __init__(self, message):
         self.message = message
-    pass
+
+class InvalidThemeException(Exception):
+    """
+    Thrown only when the theme of a round is joker.
+    Theme should never be that.
+    """
+    def __init__(self, message):
+        self.message = message

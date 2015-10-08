@@ -32,6 +32,14 @@ class Poker(object):
         self.suite = suite
         self.rank = rank
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def compare(self, poker):
         """
         Do general comparison without context.
@@ -39,6 +47,9 @@ class Poker(object):
         :param poker: Poker to compare with.
         :return: True if self > poker, false otherwise.
         """
+        if self == poker:
+            raise gameLogicExceptions.SameCardException\
+                ("There should not be two same cards at the same time.")
         if self.suite == 0:
             if poker.suite != 0:
                 return True
@@ -49,10 +60,10 @@ class Poker(object):
                     return True
         elif Poker.rank_greater_than(self.rank, poker.rank):
             return True
-        elif Poker.rank_greater_than(self.rank, poker.rank):
+        elif Poker.rank_greater_than(poker.rank, self.rank):
             return False
         else:
-            return self.rank < poker.rank
+            return self.suite < poker.suite
 
     def compare_with_theme(self, poker, theme):
         """
@@ -137,6 +148,7 @@ class Deck(object):
         self.cards.extend(self.heart)
         self.cards.extend(self.diamond)
         self.cards.extend(self.club)
+        self.cards.extend(self.jokers)
 
     def shuffle(self):
         substitution = list()
