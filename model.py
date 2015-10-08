@@ -87,6 +87,8 @@ class Poker(object):
                     return False
                 else:
                     return True
+        elif poker.suite == 0:
+            return False
         elif Poker.rank_greater_than(self.rank, poker.rank):
             return True
         elif Poker.rank_greater_than(poker.rank, self.rank):
@@ -111,7 +113,9 @@ class Poker(object):
                     return constants.RESULT_SMALLER
             else:
                 return False
-        if self.suite == theme:
+        elif poker.suite == 0:
+            return False
+        elif self.suite == theme:
             if poker.suite != theme:
                 return constants.RESULT_LARGER
             elif Poker.rank_greater_than(poker.rank, self.rank):
@@ -139,6 +143,8 @@ class Poker(object):
                 return constants.RESULT_LARGER
             else:
                 return constants.RESULT_SMALLER
+        elif poker.suite == 0:
+            return False
         if self.suite == main:
             if poker.suite != main:
                 return constants.RESULT_LARGER

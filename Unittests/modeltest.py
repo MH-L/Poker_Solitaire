@@ -24,6 +24,8 @@ class PokerTestCase(TestCase):
         self.assertTrue(self.poker2.compare(self.poker5))
         self.assertTrue(self.poker5.compare(self.poker4))
         self.assertFalse(self.poker3.compare(self.poker5))
+        self.assertFalse(self.poker5.compare(self.poker1))
+        self.assertFalse(self.poker5.compare(self.poker2))
         self.assertRaises(gameLogicExceptions.SameCardException,
                           Poker.compare, self.poker1, self.poker1)
 
