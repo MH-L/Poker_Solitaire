@@ -71,6 +71,9 @@ class Poker(object):
         theme: the suite of the first hand.
         Theme cards are always greater than any other.
         """
+        if self == poker:
+            raise gameLogicExceptions.SameCardException\
+                ("There should not be two same cards at the same time.")
         if self.suite == theme:
             if poker.suite != theme:
                 return constants.RESULT_LARGER
@@ -89,6 +92,9 @@ class Poker(object):
         main: the main suite
         theme: the suite of the first hand.
         """
+        if self == poker:
+            raise gameLogicExceptions.SameCardException\
+                ("There should not be two same cards at the same time.")
         if self.suite == main:
             if poker.suite != main:
                 return constants.RESULT_LARGER
@@ -159,7 +165,11 @@ class Deck(object):
         substitution.append(self.cards[0])
         self.cards = substitution
 
-    def distribute_card(self):
+    def distribute_card(self, *player):
+        counter = 0
+        while counter < len(self.cards):
+            for p in player:
+                p.receive_card(self.cards[counter])
         pass
 
 
@@ -170,8 +180,14 @@ class Player(object):
         :param turn: The position the player is at.
         :return: Constructor.
         """
-        self.pokers = list()
+        self.poker_hand = PokerHand()
         self.turn = turn
+
+    def receive_card(self, card):
+        self.poker_hand.receive_card(card)
+
+    def pullout_pokers(self, *cards):
+        self.poker_hand.pullout_pokers(cards)
 
 
 class Game(object):
@@ -185,8 +201,34 @@ class Game(object):
     pass
 
 
-class NormalGame(Game):
-    def __init__(self, game_mode):
+class PokerSet(object):
+    """
+    Defines a set of pokers.
+    """
+    def __init__(self):
+        self.cards = list()
+
+    def compare_set(self, other):
+        """
+        Compares a set with the other set of poker.
+        If the set is strictly larger than the other, return True;
+        otherwise return False.
+        :param other: The other poker set to be compared.
+        """
         pass
 
+
+class PokerHand(object):
+    """
+    Defines the set of all pokers a player has.
+    """
+    def __init__(self):
+        self.cards = list()
+
+    def receive_card(self, card):
+        self.cards.append(card)
+
+    def pullout_pokers(self, *cards):
+        for poker in cards:
+            self.cards.remove(poker)
 

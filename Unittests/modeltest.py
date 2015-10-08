@@ -35,6 +35,8 @@ class PokerTestCase(TestCase):
 
     def testCompareWithTheme(self):
         theme = 1
+        self.assertEqual(self.poker1.compare_with_theme(self.poker2), RESULT_LARGER)
+        self.assertEqual()
 
     def testCompareWithMain(self):
         pass

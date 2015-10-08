@@ -1,4 +1,4 @@
-from model import Game
+from model import Game, Deck
 
 __author__ = 'Minghao'
 
@@ -13,3 +13,15 @@ class HeartsGame(Game):
     def ___init__(self):
         super(self, NormalGame).__init__()
         # Also do something here.
+
+
+class IncompleteDeck(Deck):
+    """
+    A deck without jokers.
+    """
+    def __init__(self):
+        super(self, IncompleteDeck).__init__()
+        # Clear the jokers list and remove jokers from deck.
+        self.jokers = list()
+        del self.cards[53]
+        del self.cards[52]
