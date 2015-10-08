@@ -20,7 +20,7 @@ class IncompleteDeck(Deck):
     A deck without jokers.
     """
     def __init__(self):
-        super(self, IncompleteDeck).__init__()
+        super(IncompleteDeck, self).__init__()
         # Clear the jokers list and remove jokers from deck.
         self.jokers = list()
         del self.cards[53]

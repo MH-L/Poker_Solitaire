@@ -74,6 +74,14 @@ class Poker(object):
         if self == poker:
             raise gameLogicExceptions.SameCardException\
                 ("There should not be two same cards at the same time.")
+        if self.suite == 0:
+            if poker.suite == 0:
+                if self.rank == 1:
+                    return constants.RESULT_LARGER
+                else:
+                    return constants.RESULT_SMALLER
+            else:
+                return False
         if self.suite == theme:
             if poker.suite != theme:
                 return constants.RESULT_LARGER
@@ -95,6 +103,13 @@ class Poker(object):
         if self == poker:
             raise gameLogicExceptions.SameCardException\
                 ("There should not be two same cards at the same time.")
+        if self.suite == 0:
+            if poker.suite != 0:
+                return constants.RESULT_LARGER
+            elif self.rank == 1:
+                return constants.RESULT_LARGER
+            else:
+                return constants.RESULT_SMALLER
         if self.suite == main:
             if poker.suite != main:
                 return constants.RESULT_LARGER
@@ -144,7 +159,7 @@ class Deck(object):
         self.diamond = list()
         self.club = list()
         self.cards = list()
-        self.jokers = [Poker(1,0), Poker(2,0)]
+        self.jokers = [Poker(1, 0), Poker(2, 0)]
         for i in xrange(13):
             self.spade.append(Poker(i+1, 1))
             self.heart.append(Poker(i+1, 2))
@@ -177,6 +192,7 @@ class Player(object):
     def __init__(self, turn):
         """
         Initializes a player of a poker game.
+        Poker hand is initially empty.
         :param turn: The position the player is at.
         :return: Constructor.
         """
