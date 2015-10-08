@@ -29,7 +29,6 @@ def main():
     else:
         startUPLevelGame()
 
-    deck = Deck()
     p1 = Player(1)
     p2 = Player(2)
     p3 = Player(3)

@@ -69,14 +69,14 @@ class Poker(object):
             retStr += str(self.rank)
         return retStr
 
-    def compare(self, poker):
+    def compare(self, poker, suppress=False):
         """
         Do general comparison without context.
         This method does not allow indifferent results.
         :param poker: Poker to compare with.
         :return: True if self > poker, false otherwise.
         """
-        if self == poker:
+        if self == poker and not suppress:
             raise gameLogicExceptions.SameCardException\
                 ("There should not be two same cards at the same time.")
         if self.suite == 0:
@@ -233,6 +233,9 @@ class Player(object):
     def print_cards_in_hand(self):
         print self.__poker_hand.to_string()
 
+    def sort_hand(self):
+        self.__poker_hand.sort()
+
 
 class Game(object):
     """
@@ -259,9 +262,12 @@ class Game(object):
         while counter < len(self.deck.cards):
             for p in self.players:
                 if counter >= len(self.deck.cards):
-                    return
+                    break
                 p.receive_card(self.deck.cards[counter])
                 counter += 1
+
+        for p in self.players:
+            p.sort_hand()
 
     def print_player_cards(self):
         for p in self.players:
@@ -296,4 +302,18 @@ class PokerHand(object):
             returnStr += card.to_string()
             returnStr += "\n"
         return returnStr
+
+    def sort(self):
+        newCards = list()
+        while len(self.cards) > 0:
+            mini = self.cards[0]
+            index = 0
+            for i in range(len(self.cards)):
+                if mini.compare(self.cards[i], suppress=True):
+                    mini = self.cards[i]
+                    index = i
+            newCards.append(mini)
+            del self.cards[index]
+
+        self.cards = newCards
 
