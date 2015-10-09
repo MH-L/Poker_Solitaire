@@ -35,7 +35,7 @@ def main():
     p4 = Player(4)
     game = Game(p1, p2, p3, p4)
     game.deck.shuffle()
-    game.distribute_card()
+    game.distribute_card(big2=True)
     game.print_player_cards()
 
 

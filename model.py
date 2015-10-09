@@ -69,7 +69,7 @@ class Poker(object):
             retStr += str(self.rank)
         return retStr
 
-    def compare(self, poker, suppress=False):
+    def compare(self, poker, big2=False, suppress=False):
         """
         Do general comparison without context.
         This method does not allow indifferent results.
@@ -89,9 +89,9 @@ class Poker(object):
                     return True
         elif poker.suite == 0:
             return False
-        elif Poker.rank_greater_than(self.rank, poker.rank):
+        elif Poker.rank_greater_than(self.rank, poker.rank, big2=big2):
             return True
-        elif Poker.rank_greater_than(poker.rank, self.rank):
+        elif Poker.rank_greater_than(poker.rank, self.rank, big2=big2):
             return False
         else:
             return self.suite < poker.suite
@@ -167,12 +167,20 @@ class Poker(object):
             return constants.RESULT_INDIFFERENT
 
     @staticmethod
-    def rank_greater_than(rank1, rank2):
+    def rank_greater_than(rank1, rank2, big2=False):
         """
         Returns true if and only if rank1 is strictly greater than rank2.
         Aces, which have rank 1, are the largest. That is one exception and
         also the reason the helper function exists.
         """
+        if big2:
+            if rank1 == 2:
+                if rank2 != 2:
+                    return True
+                else:
+                    return False
+            elif rank2 == 2:
+                return False
         if rank1 == 1:
             if rank2 != 1:
                 return True
@@ -239,8 +247,14 @@ class Player(object):
     def print_cards_in_hand(self):
         print self.__poker_hand.to_string()
 
-    def sort_hand(self):
-        self.__poker_hand.sort()
+    def sort_hand(self, big2=False):
+        self.__poker_hand.sort(big2=big2)
+
+    def make_turn(self, current_set):
+        """
+        Player pullout his card. This requires support from algorithms.
+        """
+        pass
 
 
 class Game(object):
@@ -251,6 +265,7 @@ class Game(object):
     def __init__(self, *players):
         self.deck = Deck()
         self.players = players
+        self.currentSet = None
 
     def compare_set(self, set1, set2):
         """
@@ -263,7 +278,7 @@ class Game(object):
         """
         pass
 
-    def distribute_card(self):
+    def distribute_card(self, big2=False):
         counter = 0
         while counter < len(self.deck.cards):
             for p in self.players:
@@ -273,11 +288,14 @@ class Game(object):
                 counter += 1
 
         for p in self.players:
-            p.sort_hand()
+            p.sort_hand(big2=big2)
 
     def print_player_cards(self):
         for p in self.players:
             p.print_cards_in_hand()
+
+    def process_game(self):
+        pass
 
 
 class PokerSet(object):
@@ -309,13 +327,13 @@ class PokerHand(object):
             returnStr += "\n"
         return returnStr
 
-    def sort(self):
+    def sort(self, big2=False):
         newCards = list()
         while len(self.cards) > 0:
             mini = self.cards[0]
             index = 0
             for i in range(len(self.cards)):
-                if mini.compare(self.cards[i], suppress=True):
+                if mini.compare(self.cards[i], big2=big2, suppress=True):
                     mini = self.cards[i]
                     index = i
             newCards.append(mini)

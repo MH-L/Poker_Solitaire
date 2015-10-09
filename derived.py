@@ -1,4 +1,4 @@
-from model import Game, Deck
+from model import Game, Deck, Player
 
 __author__ = 'Minghao'
 
@@ -28,3 +28,19 @@ class IncompleteDeck(Deck):
         self.jokers = list()
         del self.cards[53]
         del self.cards[52]
+
+
+class ComputerPlayer(Player):
+    pass
+
+
+class NormalGameComPlayer(ComputerPlayer):
+    pass
+
+
+class HeartGameComPlayer(ComputerPlayer):
+    pass
+
+
+class UPLevelGameComPlayer(ComputerPlayer):
+    pass
