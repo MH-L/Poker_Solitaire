@@ -27,8 +27,20 @@ class NormalGame(Game):
         # first verify the choice is consistent
         # then use compare_set helper method to determine
         # if it is valid.
+        """
+        :param choices: the set of cards that needs to be validated.
+        """
 
-        return False
+        # check any card that is neither 2's nor jokers
+        main_rank = 0
+        for card in choices:
+            if not (card.suite == 0 or card.rank == 2):
+                if main_rank == 0:
+                    main_rank = card.rank
+                elif card.rank != main_rank:
+                    return False
+
+        return True
 
 
 class HeartsGame(Game):
@@ -89,11 +101,7 @@ class HumanPlayer(Player):
             else:
                 isValidChoice = True
 
-        isOkayChoice = self.validate_choice(indices, current_set)
-
-    def validate_choice(self, choices, current_set):
-        return False
-    pass
+        return self.pull_out(indices)
 
 
 class NormalHumanPlayer(HumanPlayer):
@@ -105,6 +113,4 @@ class HeartsHumanPlayer(HumanPlayer):
 
 
 class UPLevelHumanPlayer(HumanPlayer):
-    def validate_choice(self, choices, current_set):
-        pass
     pass

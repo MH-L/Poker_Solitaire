@@ -6,7 +6,9 @@ from model import (
 from constants import (
     RESULT_LARGER, RESULT_SMALLER, RESULT_INDIFFERENT
 )
-from derived import IncompleteDeck
+from derived import (
+    IncompleteDeck, NormalGame, HeartsGame
+)
 
 import gameLogicExceptions
 
@@ -79,3 +81,21 @@ class PlayerTestCase(TestCase):
         self.assertEqual(self.player.get_num_cards(), 1)
         self.player.receive_card(Poker(3, 1))
         self.assertEqual(self.player.get_num_cards(), 2)
+
+
+class NormalGameTest(TestCase):
+    def testValidateChoice(self):
+        normal_game = NormalGame()
+        poker = list()
+        poker.append(Poker(1,0))
+        poker.append(Poker(7,1))
+        poker.append(Poker(7,2))
+        poker.append(Poker(7,3))
+        self.assertTrue(normal_game.validate_choice(poker, list()))
+        poker.append(Poker(8,4))
+        self.assertFalse(normal_game.validate_choice(poker, list()))
+    pass
+
+
+class PlayerTest(TestCase):
+    pass

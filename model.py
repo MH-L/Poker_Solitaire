@@ -256,6 +256,12 @@ class Player(object):
         """
         pass
 
+    def pull_out(self, indices):
+        retval = list()
+        for index in indices:
+            retval.append(self.__poker_hand.cards[index])
+        return retval
+
 
 class Game(object):
     """
