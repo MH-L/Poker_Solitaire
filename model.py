@@ -278,6 +278,14 @@ class Game(object):
         """
         pass
 
+    def validate_choice(self, choices, current_set):
+        """
+        Validate a player's choice. The player's choice
+        is valid if and only if 1) It forms a full set of cards;
+        2) The set of cards is greater than the current_set.
+        """
+        pass
+
     def distribute_card(self, big2=False):
         counter = 0
         while counter < len(self.deck.cards):
