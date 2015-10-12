@@ -140,3 +140,7 @@ class NormalGameTest(TestCase):
 
 class PlayerTest(TestCase):
     pass
+
+
+class PokerHandTest(TestCase):
+    pass

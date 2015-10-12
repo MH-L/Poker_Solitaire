@@ -356,3 +356,26 @@ class PokerHand(object):
 
         self.cards = newCards
 
+    def generate_poker_dict(self):
+        """
+        Generates a poker dictionary for all ranks including jokers.
+        The reason why this should be done is to make analysis much
+        simpler and light-weight.
+        :return: void.
+        """
+        # Sort the poker hand first.
+        self.sort(big2=True)
+        last_rank = 3
+        count = 0
+        for index in xrange(len(self.cards)):
+            current = self.cards[index]
+            if current.suite == 0:
+                pass
+            if current.rank == last_rank:
+                count += 1
+            else:
+                count = 0
+
+    def update_poker_dict(self, cards):
+        pass
+

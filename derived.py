@@ -48,7 +48,8 @@ class NormalGame(Game):
         rank_current = self.get_main_rank(current)
         if rank_set1 is None:
             return False
-        return rank_set1 == 0 or Poker.rank_greater_than(rank_set1, rank_current)
+        # Since the game is normal game, big2 should be true.
+        return rank_set1 == 0 or Poker.rank_greater_than(rank_set1, rank_current, big2=True)
 
     def get_main_rank(self, choices):
         # first verify the choice is consistent
@@ -110,7 +111,10 @@ class ComputerPlayer(Player):
         self.generate_poker_dict()
 
     def generate_poker_dict(self):
-        pass
+        self.poker_hand.generate_poker_dict()
+
+    def update_poker_dict(self, cards):
+        self.poker_hand.update_poker_dict(cards)
 
 
 class NormalGameComPlayer(ComputerPlayer):
