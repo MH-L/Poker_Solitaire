@@ -1,7 +1,7 @@
 __author__ = 'Minghao'
 from unittest import TestCase
 from model import (
-    Poker, Game, Player, Deck
+    Poker, Game, Player, Deck, PokerHand
 )
 from constants import (
     RESULT_LARGER, RESULT_SMALLER, RESULT_INDIFFERENT
@@ -143,4 +143,16 @@ class PlayerTest(TestCase):
 
 
 class PokerHandTest(TestCase):
-    pass
+    poker_hand = PokerHand()
+
+    def test_generate_poker_dict(self):
+        self.poker_hand.receive_card(Poker(1,0))
+        self.poker_hand.receive_card(Poker(2,0))
+        self.poker_hand.receive_card(Poker(13,1))
+        self.assertEqual(3, len(self.poker_hand.cards))
+        poker_dict = self.poker_hand.generate_poker_dict()
+        self.assertEqual(0, poker_dict[1])
+        self.assertEqual(0, poker_dict[2])
+        self.assertEqual(1, poker_dict[13])
+        self.assertEqual(1, poker_dict["Big Joker"])
+        self.assertEqual(1, poker_dict["Small Joker"])

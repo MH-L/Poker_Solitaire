@@ -365,17 +365,30 @@ class PokerHand(object):
         """
         # Sort the poker hand first.
         self.sort(big2=True)
-        last_rank = 3
-        count = 0
-        for index in xrange(len(self.cards)):
-            current = self.cards[index]
-            if current.suite == 0:
-                pass
-            if current.rank == last_rank:
-                count += 1
-            else:
-                count = 0
+        retVal = dict()
+        for index in xrange(13):
+            retVal[index + 1] = 0
 
-    def update_poker_dict(self, cards):
-        pass
+        retVal["Big Joker"] = 0
+        retVal["Small Joker"] = 0
+        for current in self.cards:
+            if current.suite == 0:
+                if current.rank == 1:
+                    retVal["Big Joker"] += 1
+                else:
+                    retVal["Small Joker"] += 1
+            else:
+                retVal[current.rank] += 1
+
+        return retVal
+
+    def update_poker_dict(self, cards, dict):
+        for card in cards:
+            if card.suite == 0:
+                if card.rank == 1:
+                    dict["Big Joker"] -= 1
+                else:
+                    dict["Small Joker"] -= 1
+            else:
+                dict[card.rank] -= 1
 
