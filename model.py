@@ -284,11 +284,12 @@ class Game(object):
         """
         pass
 
-    def validate_choice(self, choices, current_set):
+    def get_main_rank(self, choices):
         """
-        Validate a player's choice. The player's choice
-        is valid if and only if 1) It forms a full set of cards;
-        2) The set of cards is greater than the current_set.
+        Get the main rank of player's choice. If the main rank is 0,
+        then the choice is made of jokers only. Otherwise return rank of
+        the smallest card. None is returned if the choice is invalid (i.e.
+        cannot be combined together.)
         """
         pass
 

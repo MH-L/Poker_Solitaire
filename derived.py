@@ -1,4 +1,5 @@
-from model import Game, Deck, Player
+from model import Game, Deck, Player, Poker
+from gameLogicExceptions import InvalidPokerException
 
 __author__ = 'Minghao'
 
@@ -8,22 +9,48 @@ class NormalGame(Game):
         super(NormalGame, self).__init__()
         # do something here.
 
-    def compare_set(self, set1, set2):
+    def compare_set(self, set1, current):
         """
         returns True if set1 is larger than set2;
         false if less or equal or inapplicable.
+        Pre-condition: current set is checked to be
+        valid.
         """
         # TODO finish this method
-        if len(set1) != len(set2):
+        if len(set1) != len(current):
             return False
+        # when one of the sets are empty then raise an exception
         if len(set1) == 0:
-            raise
-        initialRank = set1[0].rank
-        for poker in set1:
-            if initialRank != poker.rank:
+            raise InvalidPokerException()
+
+        has_small_joker = False
+        for card in current:
+            if card.suite == 0:
+                # If current set has big joker,
+                # then it is impossible for another
+                # set to be greater, False should be returned.
+                if card.rank == 1:
+                    return False
+                else:
+                    has_small_joker = True
+
+        if has_small_joker:
+            # check to see if set1 has big joker, since
+            # current set already has small joker
+            choice_okay = False
+            for card in set1:
+                if card.suite == 0 and card.rank == 1:
+                    choice_okay = True
+            if not choice_okay:
                 return False
 
-    def validate_choice(self, choices, current_set):
+        rank_set1 = self.get_main_rank(set1)
+        rank_current = self.get_main_rank(current)
+        if rank_set1 is None:
+            return False
+        return rank_set1 == 0 or Poker.rank_greater_than(rank_set1, rank_current)
+
+    def get_main_rank(self, choices):
         # first verify the choice is consistent
         # then use compare_set helper method to determine
         # if it is valid.
@@ -34,13 +61,20 @@ class NormalGame(Game):
         # check any card that is neither 2's nor jokers
         main_rank = 0
         for card in choices:
-            if not (card.suite == 0 or card.rank == 2):
+            # if the card is not a joker, then record the card's rank.
+            if not card.suite == 0:
                 if main_rank == 0:
                     main_rank = card.rank
-                elif card.rank != main_rank:
-                    return False
+                elif main_rank != card.rank:
+                    if card.rank == 2:
+                        continue
+                    elif main_rank == 2:
+                        main_rank = card.rank
+                    # invalid choice if two ranks mixed, and none of them is 2.
+                    else:
+                        return None
 
-        return True
+        return main_rank
 
 
 class HeartsGame(Game):

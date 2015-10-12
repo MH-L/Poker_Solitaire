@@ -91,9 +91,17 @@ class NormalGameTest(TestCase):
         poker.append(Poker(7,1))
         poker.append(Poker(7,2))
         poker.append(Poker(7,3))
-        self.assertTrue(normal_game.validate_choice(poker, list()))
+        self.assertEqual(normal_game.get_main_rank(poker), 7)
         poker.append(Poker(8,4))
-        self.assertFalse(normal_game.validate_choice(poker, list()))
+        self.assertIsNone(normal_game.get_main_rank(poker))
+        poker = list()
+        poker.append(Poker(1,0))
+        poker.append(Poker(2,1))
+        poker.append(Poker(2,2))
+        poker.append(Poker(2,3))
+        self.assertEqual(normal_game.get_main_rank(poker), 2)
+        poker.append(Poker(3,3))
+        self.assertEqual(normal_game.get_main_rank(poker), 3)
     pass
 
 
