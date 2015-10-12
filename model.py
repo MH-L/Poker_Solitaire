@@ -232,23 +232,23 @@ class Player(object):
         :param turn: The position the player is at.
         :return: Constructor.
         """
-        self.__poker_hand = PokerHand()
+        self.poker_hand = PokerHand()
         self.turn = turn
 
     def receive_card(self, card):
-        self.__poker_hand.receive_card(card)
+        self.poker_hand.receive_card(card)
 
     def pullout_pokers(self, *cards):
-        self.__poker_hand.pullout_pokers(cards)
+        self.poker_hand.pullout_pokers(cards)
 
     def get_num_cards(self):
-        return len(self.__poker_hand.cards)
+        return len(self.poker_hand.cards)
 
     def print_cards_in_hand(self):
-        print self.__poker_hand.to_string()
+        print self.poker_hand.to_string()
 
     def sort_hand(self, big2=False):
-        self.__poker_hand.sort(big2=big2)
+        self.poker_hand.sort(big2=big2)
 
     def make_turn(self, current_set):
         """
@@ -259,7 +259,7 @@ class Player(object):
     def pull_out(self, indices):
         retval = list()
         for index in indices:
-            retval.append(self.__poker_hand.cards[index])
+            retval.append(self.poker_hand.cards[index])
         return retval
 
 

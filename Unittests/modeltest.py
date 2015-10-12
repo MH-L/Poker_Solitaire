@@ -84,25 +84,58 @@ class PlayerTestCase(TestCase):
 
 
 class NormalGameTest(TestCase):
-    def testValidateChoice(self):
-        normal_game = NormalGame()
+    normal_game = NormalGame()
+    def test_get_main_rank(self):
         poker = list()
         poker.append(Poker(1,0))
         poker.append(Poker(7,1))
         poker.append(Poker(7,2))
         poker.append(Poker(7,3))
-        self.assertEqual(normal_game.get_main_rank(poker), 7)
+        self.assertEqual(self.normal_game.get_main_rank(poker), 7)
         poker.append(Poker(8,4))
-        self.assertIsNone(normal_game.get_main_rank(poker))
+        self.assertIsNone(self.normal_game.get_main_rank(poker))
         poker = list()
         poker.append(Poker(1,0))
         poker.append(Poker(2,1))
         poker.append(Poker(2,2))
         poker.append(Poker(2,3))
-        self.assertEqual(normal_game.get_main_rank(poker), 2)
+        self.assertEqual(self.normal_game.get_main_rank(poker), 2)
         poker.append(Poker(3,3))
-        self.assertEqual(normal_game.get_main_rank(poker), 3)
-    pass
+        self.assertEqual(self.normal_game.get_main_rank(poker), 3)
+
+    def test_compare_set(self):
+        poker = list()
+        another = list()
+        poker.append(Poker(1,0))
+        poker.append(Poker(3,1))
+        poker.append(Poker(3,2))
+        poker.append(Poker(3,3))
+        another.append(Poker(4,4))
+        another.append(Poker(4,2))
+        another.append(Poker(4,3))
+        # Check for case where the two sets have different lengths.
+        self.assertFalse(self.normal_game.compare_set(another, poker))
+        another.append(Poker(4,1))
+        # Check no sets are greater than the one with big joker.
+        self.assertFalse(self.normal_game.compare_set(another, poker))
+        # Remove big joker and add small joker.
+        poker.remove(Poker(1,0))
+        poker.append(Poker(2,0))
+        # This time the function should still return false because another does
+        # not have a big joker.
+        self.assertFalse(self.normal_game.compare_set(another, poker))
+        another.remove(Poker(4,4))
+        another.append(Poker(1,0))
+        # should return true because another set has a big joker.
+        self.assertTrue(self.normal_game.compare_set(another, poker))
+        another.remove(Poker(4,3))
+        another.append(Poker(2,2))
+        # wild card -- 2 -- being added, should still return true.
+        self.assertTrue(self.normal_game.compare_set(another, poker))
+        another.remove(Poker(2,2))
+        another.append(Poker(1,2))
+        # Should return false because another has mixed ranks.
+        self.assertFalse(self.normal_game.compare_set(another, poker))
 
 
 class PlayerTest(TestCase):

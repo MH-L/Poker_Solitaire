@@ -78,7 +78,7 @@ class NormalGame(Game):
 
 
 class HeartsGame(Game):
-    def ___init__(self):
+    def __init__(self):
         super(HeartsGame, self).__init__()
         # Also do something here.
 
@@ -96,10 +96,26 @@ class IncompleteDeck(Deck):
 
 
 class ComputerPlayer(Player):
-    pass
+    def __init__(self, turn, game=None):
+        """
+        Initializes a computer player. Computer players must know game in order
+        to make decisions.
+        :param game: Current poker game.
+        :return: (constructor)
+        """
+        super(ComputerPlayer, self).__init__(turn)
+        # game field must be invisible.
+        self.__game = game
+        self.poker_dict = dict()
+        self.generate_poker_dict()
+
+    def generate_poker_dict(self):
+        pass
 
 
 class NormalGameComPlayer(ComputerPlayer):
+    def make_turn(self, current_set):
+        pass
     pass
 
 
