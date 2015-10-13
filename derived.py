@@ -163,13 +163,6 @@ class HumanPlayer(Player):
 
         cards_to_pull_out = self.get_cards_by_indices(indices)
         return cards_to_pull_out
-        # must prompt the user input again if the choices are not valid.
-        if not self._game.validate_choice(cards_to_pull_out):
-            print "The choice you entered is not a valid set" \
-                  "given the current set. Please enter again."
-            self.make_turn(current_set)
-        self._game.update_current_set(cards_to_pull_out)
-        self.pullout_pokers(cards_to_pull_out)
 
 
 class NormalHumanPlayer(HumanPlayer):

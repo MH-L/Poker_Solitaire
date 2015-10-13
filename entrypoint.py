@@ -4,6 +4,7 @@ INVALID_CHOICE_CONSTANT = 0
 from model import (
     Deck, Player, PokerHand, Game
 )
+from derived import HumanPlayer
 import sys
 
 def main():
@@ -34,14 +35,15 @@ def main():
 
 
 def startNormalGame():
-    p1 = Player(1)
-    p2 = Player(2)
-    p3 = Player(3)
-    p4 = Player(4)
+    p1 = HumanPlayer(1)
+    p2 = HumanPlayer(2)
+    p3 = HumanPlayer(3)
+    p4 = HumanPlayer(4)
     game = Game(p1, p2, p3, p4)
     game.deck.shuffle()
     game.distribute_card(big2=True)
     game.print_player_cards()
+    game.process_game()
 
 
 def startHeartGame():

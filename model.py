@@ -234,12 +234,16 @@ class Player(object):
         """
         self.poker_hand = PokerHand()
         self.turn = turn
+        self.has_finished = False
+        self.finished_rank = None
 
     def receive_card(self, card):
         self.poker_hand.receive_card(card)
 
     def pullout_pokers(self, cards):
         self.poker_hand.pullout_pokers(cards)
+        if self.get_num_cards() == 0:
+            self.has_finished = True
 
     def get_num_cards(self):
         return len(self.poker_hand.cards)
@@ -272,6 +276,7 @@ class Game(object):
         self.deck = Deck()
         self.players = players
         self.currentSet = None
+        self.finished_count = 0
 
     def validate_choice(self, choice):
         return self.compare_set(choice, self.currentSet)
@@ -315,14 +320,52 @@ class Game(object):
             p.print_cards_in_hand()
 
     def process_game(self):
-        for p in self.players:
-            is_valid = False
-            choice = None
-            while not is_valid:
-                choice = p.make_turn()
+        while not self.game_over():
+            for i in range(len(self.players)):
+                if self.game_over():
+                    break
+                p = self.players[i]
+                if p.has_finished:
+                    continue
+                choice = p.make_turn(self.currentSet)
                 is_valid = self.validate_choice(choice)
-            p.pullout_pokers(choice)
-            self.currentSet = choice
+                while not is_valid:
+                    # must prompt human player to enter the choice again.
+                    # if this becomes an infinite loop when dealing with
+                    # computer players, something must have gone wrong.
+                    print "The choice you entered is not a valid set " \
+                          "given the current set. Please enter again."
+                    choice = p.make_turn(self.currentSet)
+                    is_valid = self.validate_choice(choice)
+                p.pullout_pokers(choice)
+                self.currentSet = choice
+                if p.has_finished:
+                    p.finished_rank = self.finished_count + 1
+                    self.finished_count += 1
+
+        player_last = self.get_last_player()
+        player_last.has_finished = True
+        player_last.finished_rank = self.finished_count + 1
+        print "Game over. Players' rankings are as follows:\n"
+        self.print_rankings()
+
+    def get_last_player(self):
+        for player in self.players:
+            if not player.has_finished:
+                return player
+
+    def game_over(self):
+        return len(self.players) - self.finished_count <= 1
+
+    def print_rankings(self):
+        cur_ranking = 1
+        while cur_ranking <= len(self.players):
+            candidate = None
+            for player in self.players:
+                if player.finished_rank == cur_ranking:
+                    cur_ranking += 1
+                    break
+            print "No. %s: Player %s" % (str(cur_ranking), str(candidate.turn))
 
 
 
