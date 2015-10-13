@@ -338,7 +338,7 @@ class PokerHand(object):
     def to_string(self):
         returnStr = "The list of cards are:\n"
         for card in self.cards:
-            returnStr += card.to_string()
+            returnStr += str(self.cards.index(card) + 1) + "th card: " + card.to_string()
             returnStr += "\n"
         return returnStr
 

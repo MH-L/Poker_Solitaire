@@ -4,7 +4,7 @@ INVALID_CHOICE_CONSTANT = 0
 from model import (
     Deck, Player, PokerHand, Game
 )
-
+import sys
 
 def main():
     print "The Poker Game is starting."
@@ -37,6 +37,7 @@ def main():
     game.deck.shuffle()
     game.distribute_card(big2=True)
     game.print_player_cards()
+    sys.stdin.read(1)
 
 
 def startNormalGame():

@@ -111,7 +111,7 @@ class ComputerPlayer(Player):
         self.generate_poker_dict()
 
     def generate_poker_dict(self):
-        self.poker_hand.generate_poker_dict()
+        self.poker_dict = self.poker_hand.generate_poker_dict()
 
     def update_poker_dict(self, cards):
         self.poker_hand.update_poker_dict(cards, self.poker_dict)
