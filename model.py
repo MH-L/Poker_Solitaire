@@ -225,7 +225,7 @@ class Deck(object):
 
 
 class Player(object):
-    def __init__(self, turn, game):
+    def __init__(self, turn):
         """
         Initializes a player of a poker game.
         Poker hand is initially empty.
@@ -234,12 +234,11 @@ class Player(object):
         """
         self.poker_hand = PokerHand()
         self.turn = turn
-        self._game = game
 
     def receive_card(self, card):
         self.poker_hand.receive_card(card)
 
-    def pullout_pokers(self, *cards):
+    def pullout_pokers(self, cards):
         self.poker_hand.pullout_pokers(cards)
 
     def get_num_cards(self):
@@ -274,6 +273,9 @@ class Game(object):
         self.players = players
         self.currentSet = None
 
+    def validate_choice(self, choice):
+        return self.compare_set(choice, self.currentSet)
+
     @staticmethod
     def compare_set(set1, set2):
         """
@@ -284,7 +286,7 @@ class Game(object):
         :param set2: The second poker set to be compared.
         Note: The result also depends on game type.
         """
-        pass
+        return False
 
     @staticmethod
     def get_main_rank(choices):
@@ -294,7 +296,7 @@ class Game(object):
         the smallest card. None is returned if the choice is invalid (i.e.
         cannot be combined together.)
         """
-        pass
+        return 0
 
     def distribute_card(self, big2=False):
         counter = 0
@@ -313,7 +315,15 @@ class Game(object):
             p.print_cards_in_hand()
 
     def process_game(self):
-        pass
+        for p in self.players:
+            is_valid = False
+            choice = None
+            while not is_valid:
+                choice = p.make_turn()
+                is_valid = self.validate_choice(choice)
+            p.pullout_pokers(choice)
+            self.currentSet = choice
+
 
 
 class PokerSet(object):
