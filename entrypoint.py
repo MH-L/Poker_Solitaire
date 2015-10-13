@@ -29,6 +29,11 @@ def main():
     else:
         startUPLevelGame()
 
+
+    sys.stdin.read(1)
+
+
+def startNormalGame():
     p1 = Player(1)
     p2 = Player(2)
     p3 = Player(3)
@@ -37,11 +42,6 @@ def main():
     game.deck.shuffle()
     game.distribute_card(big2=True)
     game.print_player_cards()
-    sys.stdin.read(1)
-
-
-def startNormalGame():
-    pass
 
 
 def startHeartGame():

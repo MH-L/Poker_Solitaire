@@ -225,7 +225,7 @@ class Deck(object):
 
 
 class Player(object):
-    def __init__(self, turn):
+    def __init__(self, turn, game):
         """
         Initializes a player of a poker game.
         Poker hand is initially empty.
@@ -234,6 +234,7 @@ class Player(object):
         """
         self.poker_hand = PokerHand()
         self.turn = turn
+        self._game = game
 
     def receive_card(self, card):
         self.poker_hand.receive_card(card)
@@ -256,7 +257,7 @@ class Player(object):
         """
         pass
 
-    def pull_out(self, indices):
+    def get_cards_by_indices(self, indices):
         retval = list()
         for index in indices:
             retval.append(self.poker_hand.cards[index])
@@ -273,7 +274,8 @@ class Game(object):
         self.players = players
         self.currentSet = None
 
-    def compare_set(self, set1, set2):
+    @staticmethod
+    def compare_set(set1, set2):
         """
         Compares a set with the other set of poker.
         If the  first set is strictly larger than the second, return True;
@@ -284,7 +286,8 @@ class Game(object):
         """
         pass
 
-    def get_main_rank(self, choices):
+    @staticmethod
+    def get_main_rank(choices):
         """
         Get the main rank of player's choice. If the main rank is 0,
         then the choice is made of jokers only. Otherwise return rank of
@@ -331,7 +334,7 @@ class PokerHand(object):
     def receive_card(self, card):
         self.cards.append(card)
 
-    def pullout_pokers(self, *cards):
+    def pullout_pokers(self, cards):
         for poker in cards:
             self.cards.remove(poker)
 

@@ -156,3 +156,20 @@ class PokerHandTest(TestCase):
         self.assertEqual(1, poker_dict[13])
         self.assertEqual(1, poker_dict["Big Joker"])
         self.assertEqual(1, poker_dict["Small Joker"])
+
+    def test_update_poker_dict(self):
+        self.poker_hand.receive_card(Poker(1,0))
+        self.poker_hand.receive_card(Poker(2,2))
+        self.poker_hand.receive_card(Poker(2,3))
+        self.poker_hand.receive_card(Poker(13,1))
+        self.poker_hand.receive_card(Poker(13,2))
+        self.poker_hand.receive_card(Poker(12,1))
+        self.poker_hand.receive_card(Poker(12,3))
+        self.poker_hand.receive_card(Poker(11,3))
+        poker_dict = self.poker_hand.generate_poker_dict()
+        cards_to_pull_out = [Poker(12,1), Poker(12,3)]
+        self.poker_hand.pullout_pokers(cards_to_pull_out)
+        self.assertEqual(len(self.poker_hand.cards), 6)
+        self.poker_hand.update_poker_dict(cards_to_pull_out, poker_dict)
+        self.assertEqual(poker_dict[12], 0)
+        self.assertEqual(poker_dict[13], 2)

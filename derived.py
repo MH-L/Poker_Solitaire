@@ -9,7 +9,8 @@ class NormalGame(Game):
         super(NormalGame, self).__init__()
         # do something here.
 
-    def compare_set(self, set1, current):
+    @staticmethod
+    def compare_set(set1, current):
         """
         returns True if set1 is larger than set2;
         false if less or equal or inapplicable.
@@ -44,14 +45,15 @@ class NormalGame(Game):
             if not choice_okay:
                 return False
 
-        rank_set1 = self.get_main_rank(set1)
-        rank_current = self.get_main_rank(current)
+        rank_set1 = Game.get_main_rank(set1)
+        rank_current = Game.get_main_rank(current)
         if rank_set1 is None:
             return False
         # Since the game is normal game, big2 should be true.
         return rank_set1 == 0 or Poker.rank_greater_than(rank_set1, rank_current, big2=True)
 
-    def get_main_rank(self, choices):
+    @staticmethod
+    def get_main_rank(choices):
         # first verify the choice is consistent
         # then use compare_set helper method to determine
         # if it is valid.
@@ -104,9 +106,7 @@ class ComputerPlayer(Player):
         :param game: Current poker game.
         :return: (constructor)
         """
-        super(ComputerPlayer, self).__init__(turn)
-        # game field must be invisible.
-        self.__game = game
+        super(ComputerPlayer, self).__init__(turn, game)
         self.poker_dict = dict()
         self.generate_poker_dict()
 
@@ -115,6 +115,10 @@ class ComputerPlayer(Player):
 
     def update_poker_dict(self, cards):
         self.poker_hand.update_poker_dict(cards, self.poker_dict)
+
+    def pullout_pokers(self, cards):
+        self.poker_hand.pullout_pokers(cards)
+        self.update_poker_dict(cards)
 
 
 class NormalGameComPlayer(ComputerPlayer):
@@ -155,7 +159,9 @@ class HumanPlayer(Player):
             else:
                 isValidChoice = True
 
-        return self.pull_out(indices)
+        cards_to_pull_out = self.get_cards_by_indices(indices)
+        if self._game.compare_set()
+        self.pullout_pokers(cards_to_pull_out)
 
 
 class NormalHumanPlayer(HumanPlayer):
