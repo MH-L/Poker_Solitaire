@@ -236,6 +236,7 @@ class Player(object):
         self.turn = turn
         self.has_finished = False
         self.finished_rank = None
+        self.status = "continue"
 
     def receive_card(self, card):
         self.poker_hand.receive_card(card)
@@ -331,6 +332,10 @@ class Game(object):
                 if p.has_finished:
                     continue
                 choice = p.make_turn(self.currentSet)
+                # TODO if all the players have passed, start a new round.
+                if len(choice) == 0:
+                    p.status = "passed"
+                    continue
                 is_valid = self.validate_choice(choice)
                 while not is_valid:
                     # must prompt human player to enter the choice again.
@@ -341,6 +346,7 @@ class Game(object):
                     choice = p.make_turn(self.currentSet)
                     is_valid = self.validate_choice(choice)
                 p.pullout_pokers(choice)
+                p.status = "continue"
                 self.currentSet = choice
                 if p.has_finished:
                     p.finished_rank = self.finished_count + 1
