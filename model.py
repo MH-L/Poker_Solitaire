@@ -335,6 +335,9 @@ class Game(object):
                 # TODO if all the players have passed, start a new round.
                 if len(choice) == 0:
                     p.status = "passed"
+                    if (self.get_passed_players() >= len(self.players) - 1):
+                        # TODO do something here. since a new round should be started.
+                        pass
                     continue
                 is_valid = self.validate_choice(choice)
                 while not is_valid:
@@ -375,6 +378,22 @@ class Game(object):
                     cur_ranking += 1
                     break
             print "No. %s: Player %s" % (str(cur_ranking), str(candidate.turn))
+
+    def get_passed_players(self):
+        passed_count = 0
+        for player in self.players:
+            if player.status == "passed":
+                passed_count += 1
+        return passed_count
+
+    def reset_player_status(self):
+        for player in self.players:
+            player.status = "continue"
+
+    def get_winner_player_of_round(self):
+        for player in self.players:
+            if player.status == "continue":
+                return player
 
 
 
