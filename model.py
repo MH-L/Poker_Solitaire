@@ -279,6 +279,9 @@ class Game(object):
         self.finished_count = 0
 
     def validate_choice(self, choice):
+        # If the player passes, true is always returned.
+        if len(choice) == 0:
+            return True
         return self.compare_set(choice, self.currentSet)
 
     @staticmethod

@@ -18,6 +18,11 @@ class NormalGame(Game):
         valid.
         """
         # TODO finish this method
+        # if current is None, then player has the right to
+        # pull out cards first. If set1 is consistent then
+        # it should be Okay.
+        if current is None:
+            return NormalGame.get_main_rank(set1) is not None
         if len(set1) != len(current):
             return False
         # when one of the sets are empty then raise an exception
@@ -144,8 +149,10 @@ class HumanPlayer(Player):
         while not isValidChoice:
             indices = list()
             hasInvalid = False
-            userInput = raw_input("Enter a sequence of cards, separated by commas.")
-            cards = userInput.split(",")
+            userInput = raw_input("Enter a sequence of cards, separated by commas. Or enter 'P' to pass.")
+            if userInput == "P":
+                return []
+            cards = str(userInput).split(",")
             for card in cards:
                 try:
                     index = int(card)
