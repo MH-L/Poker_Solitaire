@@ -294,7 +294,7 @@ class Game(object):
     def validate_choice(self, choice, allowNull=False):
         # If the player passes, true is always returned.
         if allowNull and len(choice) == 0:
-                return True
+            return True
         return self.compare_set(choice, self.currentSet)
 
     def compare_set(self, set1, set2):

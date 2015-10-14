@@ -8,7 +8,18 @@ class NormalGame(Game):
 
     def process_game(self):
         while not self.game_over():
+            resultStr = "The current set is:\n"
+            if self.currentSet is None:
+                resultStr += "None"
+            else:
+                for card in self.currentSet:
+                    resultStr += str(self.currentSet.index(card) + 1) + "th card: " + card.to_string()
+                    resultStr += "\n"
+            print resultStr
+
             p = self.get_player_with_turn(self.current_turn)
+            print "\nPlayer %s, you have the following hand:\n" % str(p.turn)
+            p.print_cards_in_hand()
 
             # quickly prepare for "jiefeng". wtf I don't know how to say that in English...
             if self.last_turn is not None:
@@ -35,11 +46,12 @@ class NormalGame(Game):
                 print "The choice you entered is not a valid set " \
                       "given the current set. Please enter again."
                 choice = p.make_turn(self.currentSet)
-                is_valid = self.validate_choice(choice)
+                is_valid = self.validate_choice(choice, allowNull=nullable)
 
             # If player passes, set status and continue.
             if len(choice) == 0:
                 p.status = "passed"
+                self.current_turn = self.get_next_turn()
                 continue
             p.pullout_pokers(choice)
             p.status = "continue"
@@ -206,10 +218,10 @@ class HumanPlayer(Player):
                 except ValueError:
                     hasInvalid = True
                     break
-                if index >= self.get_num_cards():
+                if index > self.get_num_cards() or index < 1:
                     hasInvalid = True
                     break
-                indices.append(index)
+                indices.append(index - 1)
             if hasInvalid:
                 print "The input you entered is not valid."
             else:
