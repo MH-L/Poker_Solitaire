@@ -332,7 +332,7 @@ class Game(object):
     def process_game(self):
         pass
 
-    def get_last_player(self):
+    def get_last_finished_player(self):
         for player in self.players:
             if not player.has_finished:
                 return player
@@ -357,10 +357,6 @@ class Game(object):
                 passed_count += 1
         return passed_count
 
-    def reset_player_status(self):
-        for player in self.players:
-            player.status = "continue"
-
     def get_winner_player_of_round(self):
         for player in self.players:
             if player.status == "continue":
@@ -371,11 +367,21 @@ class Game(object):
             if player.turn == self.current_turn:
                 return player
 
-    def update_next_turn(self):
-        if self.current_turn < len(self.players):
-            self.current_turn += 1
-        else:
-            self.current_turn = 1
+    def get_next_turn(self):
+        """
+        gets the next turn. skip finished players.
+        """
+        def _get_next_turn(turn):
+            if turn < len(self.players):
+                return turn + 1
+            else:
+                return 1
+        ret = _get_next_turn(self.current_turn)
+        while self.get_player_with_turn(ret).has_finished:
+            if ret == self.current_turn:
+                return None
+            ret = _get_next_turn(ret)
+        return ret
 
     def do_cleanup(self):
         """
@@ -385,6 +391,16 @@ class Game(object):
             player.status = "continue"
         self.last_turn = None
         self.currentSet = None
+
+    def get_player_with_last_turn(self):
+        for player in self.players:
+            if player.turn == self.last_turn:
+                return player
+
+    def get_player_with_turn(self, turn):
+        for player in self.players:
+            if player.turn == turn:
+                return player
 
 
 class PokerSet(object):

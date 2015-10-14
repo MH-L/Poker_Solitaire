@@ -14,10 +14,15 @@ class NormalGame(Game):
             # TODO If a player has finished, jiefeng is not easy to implement.
             # TODO also, what if current set is None?
             p = self.get_current_turn_player()
-            if p.has_finished:
-                self.update_next_turn()
-                continue
 
+            # quickly prepare for "jiefeng". wtf I don't know how to say that in English...
+            if self.get_player_with_last_turn().has_finished:
+                p2 = self.get_player_with_turn(self.get_next_turn())
+                if p2.turn != p.turn:
+                    p2.status = "continue"
+                    self.last_turn = p2.turn
+
+            # if the player is facing his own set, then he should be given the right-of-card.
             if p.turn == self.last_turn:
                 self.do_cleanup()
                 self.current_turn = p.turn
@@ -50,7 +55,7 @@ class NormalGame(Game):
 
             self.update_next_turn()
 
-        player_last = self.get_last_player()
+        player_last = self.get_last_finished_player()
         player_last.has_finished = True
         player_last.finished_rank = self.finished_count + 1
         print "Game over. Players' rankings are as follows:\n"
