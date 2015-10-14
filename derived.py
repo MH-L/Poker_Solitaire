@@ -5,20 +5,18 @@ __author__ = 'Minghao'
 
 
 class NormalGame(Game):
-    def __init__(self, *players):
-        super(NormalGame, self).__init__(players)
-        # do something here.
 
     def process_game(self):
         while not self.game_over():
             p = self.get_player_with_turn(self.current_turn)
 
             # quickly prepare for "jiefeng". wtf I don't know how to say that in English...
-            if self.get_player_with_turn(self.last_turn).has_finished:
-                p2 = self.get_player_with_turn(self.get_next_turn())
-                if p2.turn != p.turn:
-                    p2.status = "continue"
-                    self.last_turn = p2.turn
+            if self.last_turn is not None:
+                if self.get_player_with_turn(self.last_turn).has_finished:
+                    p2 = self.get_player_with_turn(self.get_next_turn())
+                    if p2.turn != p.turn:
+                        p2.status = "continue"
+                        self.last_turn = p2.turn
 
             # if the player is facing his own set, then he should be given the right-of-card.
             if p.turn == self.last_turn:
