@@ -5,18 +5,16 @@ __author__ = 'Minghao'
 
 
 class NormalGame(Game):
-    def __init__(self):
-        super(NormalGame, self).__init__()
+    def __init__(self, *players):
+        super(NormalGame, self).__init__(players)
         # do something here.
 
     def process_game(self):
         while not self.game_over():
-            # TODO If a player has finished, jiefeng is not easy to implement.
-            # TODO also, what if current set is None?
-            p = self.get_current_turn_player()
+            p = self.get_player_with_turn(self.current_turn)
 
             # quickly prepare for "jiefeng". wtf I don't know how to say that in English...
-            if self.get_player_with_last_turn().has_finished:
+            if self.get_player_with_turn(self.last_turn).has_finished:
                 p2 = self.get_player_with_turn(self.get_next_turn())
                 if p2.turn != p.turn:
                     p2.status = "continue"
@@ -48,12 +46,12 @@ class NormalGame(Game):
             p.pullout_pokers(choice)
             p.status = "continue"
             self.currentSet = choice
+            self.last_turn = p.turn
             if p.has_finished:
-                p.status = "passed"
                 p.finished_rank = self.finished_count + 1
                 self.finished_count += 1
 
-            self.update_next_turn()
+            self.current_turn = self.get_next_turn()
 
         player_last = self.get_last_finished_player()
         player_last.has_finished = True
@@ -61,15 +59,14 @@ class NormalGame(Game):
         print "Game over. Players' rankings are as follows:\n"
         self.print_rankings()
 
-    @staticmethod
-    def compare_set(set1, current):
+    def compare_set(self, set1, current):
         """
         returns True if set1 is larger than set2;
         false if less or equal or inapplicable.
         Pre-condition: current set is checked to be
         valid.
         """
-        # TODO finish this method
+
         # if current is None, then player has the right to
         # pull out cards first. If set1 is consistent then
         # it should be Okay.
@@ -102,8 +99,8 @@ class NormalGame(Game):
             if not choice_okay:
                 return False
 
-        rank_set1 = Game.get_main_rank(set1)
-        rank_current = Game.get_main_rank(current)
+        rank_set1 = NormalGame.get_main_rank(set1)
+        rank_current = NormalGame.get_main_rank(current)
         if rank_set1 is None:
             return False
         # Since the game is normal game, big2 should be true.

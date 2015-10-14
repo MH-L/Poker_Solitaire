@@ -83,7 +83,35 @@ class PlayerTestCase(TestCase):
         self.assertEqual(self.player.get_num_cards(), 2)
 
 
-class NormalGameTest(TestCase):
+class GameTestCase(TestCase):
+    player1 = Player(1)
+    player2 = Player(2)
+    player3 = Player(3)
+    game = Game(player1, player2, player3)
+
+    def test_constructor(self):
+        self.assertIsNone(self.game.last_turn)
+        self.assertIsNone(self.game.currentSet)
+        self.assertEqual(self.game.current_turn, 1)
+        self.assertEqual(self.game.finished_count, 0)
+        self.assertEqual(len(self.game.deck.cards), 54)
+
+    def test_get_player_by_turn(self):
+        self.assertEqual(Player(1), self.game.get_player_with_turn(1))
+        self.assertEqual(Player(2), self.game.get_player_with_turn(2))
+        self.assertEqual(Player(3), self.game.get_player_with_turn(3))
+
+    def test_get_next_turn(self):
+        self.assertEqual(2, self.game.get_next_turn())
+        self.player2.has_finished = True
+        self.assertEqual(3, self.game.get_next_turn())
+
+    def test_get_last_finished_player(self):
+        self.player1.has_finished = True
+        self.player3.has_finished = True
+        self.assertEqual(self.game.get_last_finished_player(), self.player2)
+
+class NormalGameTestCase(TestCase):
     normal_game = NormalGame()
     def test_get_main_rank(self):
         poker = list()
@@ -138,11 +166,11 @@ class NormalGameTest(TestCase):
         self.assertFalse(self.normal_game.compare_set(another, poker))
 
 
-class PlayerTest(TestCase):
+class PlayerTestCase(TestCase):
     pass
 
 
-class PokerHandTest(TestCase):
+class PokerHandTestCase(TestCase):
     poker_hand = PokerHand()
 
     def test_generate_poker_dict(self):

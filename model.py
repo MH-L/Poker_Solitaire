@@ -238,6 +238,12 @@ class Player(object):
         self.finished_rank = None
         self.status = "continue"
 
+    def __eq__(self, other):
+        return self.turn == other.turn
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def receive_card(self, card):
         self.poker_hand.receive_card(card)
 
@@ -291,8 +297,7 @@ class Game(object):
                 return True
         return self.compare_set(choice, self.currentSet)
 
-    @staticmethod
-    def compare_set(set1, set2):
+    def compare_set(self, set1, set2):
         """
         Compares a set with the other set of poker.
         If the  first set is strictly larger than the second, return True;
@@ -302,16 +307,6 @@ class Game(object):
         Note: The result also depends on game type.
         """
         return False
-
-    @staticmethod
-    def get_main_rank(choices):
-        """
-        Get the main rank of player's choice. If the main rank is 0,
-        then the choice is made of jokers only. Otherwise return rank of
-        the smallest card. None is returned if the choice is invalid (i.e.
-        cannot be combined together.)
-        """
-        return 0
 
     def distribute_card(self, big2=False):
         counter = 0
@@ -350,21 +345,9 @@ class Game(object):
                     break
             print "No. %s: Player %s" % (str(cur_ranking), str(candidate.turn))
 
-    def get_num_passed_players(self):
-        passed_count = 0
-        for player in self.players:
-            if player.status == "passed":
-                passed_count += 1
-        return passed_count
-
     def get_winner_player_of_round(self):
         for player in self.players:
             if player.status == "continue":
-                return player
-
-    def get_current_turn_player(self):
-        for player in self.players:
-            if player.turn == self.current_turn:
                 return player
 
     def get_next_turn(self):
@@ -391,11 +374,6 @@ class Game(object):
             player.status = "continue"
         self.last_turn = None
         self.currentSet = None
-
-    def get_player_with_last_turn(self):
-        for player in self.players:
-            if player.turn == self.last_turn:
-                return player
 
     def get_player_with_turn(self, turn):
         for player in self.players:
