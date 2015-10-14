@@ -24,7 +24,7 @@ class NormalGame(Game):
             # quickly prepare for "jiefeng". wtf I don't know how to say that in English...
             if self.last_turn is not None:
                 if self.get_player_with_turn(self.last_turn).has_finished:
-                    p2 = self.get_player_with_turn(self.get_next_turn())
+                    p2 = self.get_player_with_turn(self.get_next_turn(self.last_turn))
                     if p2.turn != p.turn:
                         p2.status = "continue"
                         self.last_turn = p2.turn
@@ -51,7 +51,7 @@ class NormalGame(Game):
             # If player passes, set status and continue.
             if len(choice) == 0:
                 p.status = "passed"
-                self.current_turn = self.get_next_turn()
+                self.current_turn = self.get_next_turn(self.current_turn)
                 continue
             p.pullout_pokers(choice)
             p.status = "continue"
@@ -61,7 +61,7 @@ class NormalGame(Game):
                 p.finished_rank = self.finished_count + 1
                 self.finished_count += 1
 
-            self.current_turn = self.get_next_turn()
+            self.current_turn = self.get_next_turn(self.current_turn)
 
         player_last = self.get_last_finished_player()
         player_last.has_finished = True
@@ -221,7 +221,8 @@ class HumanPlayer(Player):
                 if index > self.get_num_cards() or index < 1:
                     hasInvalid = True
                     break
-                indices.append(index - 1)
+                if (index - 1) not in indices:
+                    indices.append(index - 1)
             if hasInvalid:
                 print "The input you entered is not valid."
             else:

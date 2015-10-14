@@ -293,8 +293,11 @@ class Game(object):
 
     def validate_choice(self, choice, allowNull=False):
         # If the player passes, true is always returned.
-        if allowNull and len(choice) == 0:
-            return True
+        if allowNull:
+            if len(choice) == 0:
+                return True
+        elif len(choice) == 0:
+            return False
         return self.compare_set(choice, self.currentSet)
 
     def compare_set(self, set1, set2):
@@ -350,16 +353,16 @@ class Game(object):
             if player.status == "continue":
                 return player
 
-    def get_next_turn(self):
+    def get_next_turn(self, turn):
         """
         gets the next turn. skip finished players.
         """
-        def _get_next_turn(turn):
-            if turn < len(self.players):
-                return turn + 1
+        def _get_next_turn(turn1):
+            if turn1 < len(self.players):
+                return turn1 + 1
             else:
                 return 1
-        ret = _get_next_turn(self.current_turn)
+        ret = _get_next_turn(turn)
         while self.get_player_with_turn(ret).has_finished:
             if ret == self.current_turn:
                 return None
