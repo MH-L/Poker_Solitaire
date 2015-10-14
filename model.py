@@ -277,7 +277,13 @@ class Game(object):
         self.deck = Deck()
         self.players = players
         self.currentSet = None
+        # for ranking purposes. number of players finished the game
         self.finished_count = 0
+        # indicating which player should make the turn.
+        self.current_turn = 1
+        # indicating who pulled out currentSet. should be a number normally.
+        # if this is set to None, then the player can pull out whatever card he wants.
+        self.last_turn = None
 
     def validate_choice(self, choice):
         # If the player passes, true is always returned.
@@ -325,35 +331,35 @@ class Game(object):
 
     def process_game(self):
         while not self.game_over():
-            for i in range(len(self.players)):
-                if self.game_over():
-                    break
-                p = self.players[i]
-                if p.has_finished:
-                    continue
+            # TODO also, if a player has finished, jiefeng is not easy to implement.
+            p = self.get_next_turn_player()
+            if p.has_finished:
+                self.update_next_turn()
+                continue
+            if p.turn == self.last_turn:
+                self.do_cleanup()
+                self.current_turn = p.turn
+                continue
+            choice = p.make_turn(self.currentSet)
+            # TODO if all the players have passed, start a new round.
+            if len(choice) == 0:
+                p.status = "passed"
+                continue
+            is_valid = self.validate_choice(choice)
+            while not is_valid:
+                # must prompt human player to enter the choice again.
+                # if this becomes an infinite loop when dealing with
+                # computer players, something must have gone wrong.
+                print "The choice you entered is not a valid set " \
+                      "given the current set. Please enter again."
                 choice = p.make_turn(self.currentSet)
-                # TODO if all the players have passed, start a new round.
-                if len(choice) == 0:
-                    p.status = "passed"
-                    if (self.get_passed_players() >= len(self.players) - 1):
-                        # TODO do something here. since a new round should be started.
-                        pass
-                    continue
                 is_valid = self.validate_choice(choice)
-                while not is_valid:
-                    # must prompt human player to enter the choice again.
-                    # if this becomes an infinite loop when dealing with
-                    # computer players, something must have gone wrong.
-                    print "The choice you entered is not a valid set " \
-                          "given the current set. Please enter again."
-                    choice = p.make_turn(self.currentSet)
-                    is_valid = self.validate_choice(choice)
-                p.pullout_pokers(choice)
-                p.status = "continue"
-                self.currentSet = choice
-                if p.has_finished:
-                    p.finished_rank = self.finished_count + 1
-                    self.finished_count += 1
+            p.pullout_pokers(choice)
+            p.status = "continue"
+            self.currentSet = choice
+            if p.has_finished:
+                p.finished_rank = self.finished_count + 1
+                self.finished_count += 1
 
         player_last = self.get_last_player()
         player_last.has_finished = True
@@ -379,7 +385,7 @@ class Game(object):
                     break
             print "No. %s: Player %s" % (str(cur_ranking), str(candidate.turn))
 
-    def get_passed_players(self):
+    def get_num_passed_players(self):
         passed_count = 0
         for player in self.players:
             if player.status == "passed":
@@ -395,6 +401,29 @@ class Game(object):
             if player.status == "continue":
                 return player
 
+    def get_next_turn_player(self):
+        if self.current_turn < len(self.players):
+            turn = self.current_turn + 1
+        else:
+            turn = 1
+        for player in self.players:
+            if player.turn == turn:
+                return player
+
+    def update_next_turn(self):
+        if self.current_turn < len(self.players):
+            self.current_turn += 1
+        else:
+            self.current_turn = 1
+
+    def do_cleanup(self):
+        """
+        Does cleanup when a round has finished.
+        """
+        for player in self.players:
+            player.status = "continue"
+        self.last_turn = None
+        self.currentSet = None
 
 
 class PokerSet(object):
