@@ -9,6 +9,53 @@ class NormalGame(Game):
         super(NormalGame, self).__init__()
         # do something here.
 
+    def process_game(self):
+        while not self.game_over():
+            # TODO If a player has finished, jiefeng is not easy to implement.
+            # TODO also, what if current set is None?
+            p = self.get_current_turn_player()
+            if p.has_finished:
+                self.update_next_turn()
+                continue
+
+            if p.turn == self.last_turn:
+                self.do_cleanup()
+                self.current_turn = p.turn
+                continue
+            choice = p.make_turn(self.currentSet)
+
+            # If currentSet is none, then player is not allowed to pass.
+            nullable = (self.currentSet is not None)
+            is_valid = self.validate_choice(choice, allowNull=nullable)
+            while not is_valid:
+                # must prompt human player to enter the choice again.
+                # if this becomes an infinite loop when dealing with
+                # computer players, something must have gone wrong.
+                print "The choice you entered is not a valid set " \
+                      "given the current set. Please enter again."
+                choice = p.make_turn(self.currentSet)
+                is_valid = self.validate_choice(choice)
+
+            # If player passes, set status and continue.
+            if len(choice) == 0:
+                p.status = "passed"
+                continue
+            p.pullout_pokers(choice)
+            p.status = "continue"
+            self.currentSet = choice
+            if p.has_finished:
+                p.status = "passed"
+                p.finished_rank = self.finished_count + 1
+                self.finished_count += 1
+
+            self.update_next_turn()
+
+        player_last = self.get_last_player()
+        player_last.has_finished = True
+        player_last.finished_rank = self.finished_count + 1
+        print "Game over. Players' rankings are as follows:\n"
+        self.print_rankings()
+
     @staticmethod
     def compare_set(set1, current):
         """

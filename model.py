@@ -285,10 +285,10 @@ class Game(object):
         # if this is set to None, then the player can pull out whatever card he wants.
         self.last_turn = None
 
-    def validate_choice(self, choice):
+    def validate_choice(self, choice, allowNull=False):
         # If the player passes, true is always returned.
-        if len(choice) == 0:
-            return True
+        if allowNull and len(choice) == 0:
+                return True
         return self.compare_set(choice, self.currentSet)
 
     @staticmethod
@@ -330,42 +330,7 @@ class Game(object):
             p.print_cards_in_hand()
 
     def process_game(self):
-        while not self.game_over():
-            # TODO also, if a player has finished, jiefeng is not easy to implement.
-            p = self.get_next_turn_player()
-            if p.has_finished:
-                self.update_next_turn()
-                continue
-            if p.turn == self.last_turn:
-                self.do_cleanup()
-                self.current_turn = p.turn
-                continue
-            choice = p.make_turn(self.currentSet)
-            # TODO if all the players have passed, start a new round.
-            if len(choice) == 0:
-                p.status = "passed"
-                continue
-            is_valid = self.validate_choice(choice)
-            while not is_valid:
-                # must prompt human player to enter the choice again.
-                # if this becomes an infinite loop when dealing with
-                # computer players, something must have gone wrong.
-                print "The choice you entered is not a valid set " \
-                      "given the current set. Please enter again."
-                choice = p.make_turn(self.currentSet)
-                is_valid = self.validate_choice(choice)
-            p.pullout_pokers(choice)
-            p.status = "continue"
-            self.currentSet = choice
-            if p.has_finished:
-                p.finished_rank = self.finished_count + 1
-                self.finished_count += 1
-
-        player_last = self.get_last_player()
-        player_last.has_finished = True
-        player_last.finished_rank = self.finished_count + 1
-        print "Game over. Players' rankings are as follows:\n"
-        self.print_rankings()
+        pass
 
     def get_last_player(self):
         for player in self.players:
@@ -401,13 +366,9 @@ class Game(object):
             if player.status == "continue":
                 return player
 
-    def get_next_turn_player(self):
-        if self.current_turn < len(self.players):
-            turn = self.current_turn + 1
-        else:
-            turn = 1
+    def get_current_turn_player(self):
         for player in self.players:
-            if player.turn == turn:
+            if player.turn == self.current_turn:
                 return player
 
     def update_next_turn(self):
